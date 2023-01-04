@@ -47,7 +47,14 @@ func create_link(link, env3d):
 				pass
 	env3d.add_child(linknode)
 
+# render the items in urdf_dict
+# as children of the node env3d.
 func render_urdf(urdf_dict, env3d):
+	#clear out previous render
+	for child in env3d.get_children():
+		child.queue_free()
+	
+	#render new model
 	if urdf_dict["type"]=="link":
 		create_link(urdf_dict, env3d)
 	else:

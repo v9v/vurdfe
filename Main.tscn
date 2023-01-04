@@ -72,6 +72,7 @@ margin_bottom = 600.0
 rect_min_size = Vector2( 310, 0 )
 
 [node name="EditCheckTimer" type="Timer" parent="."]
+wait_time = 0.1
 autostart = true
 
 [connection signal="mouse_entered" from="HBoxContainer/ViewportContainer" to="HBoxContainer/ViewportContainer/Viewport/3D_env" method="_on_ViewportContainer_mouse_entered"]

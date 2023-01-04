@@ -7,9 +7,6 @@ var tagbox=load("res://tagcontainer.tscn")
 
 var attrs_list=[]
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
 
 func _on_Button_pressed():
 	var result=urdf_parser.parse($HBoxContainer/InputPanel/TextEdit.text)
@@ -63,16 +60,22 @@ func build_node_addr(listy):
 		dat=dat+i+"/PanelContainer/VBoxContainer/"
 	return dat
 
+# called when a value is edited from the config pane. updates the value in the text representation
+# to match the update. Then re-renders the model.
 func edit_val(index, oldlen, delta_len, oldval, newval):
 	#update value in text
 	var textnode=$HBoxContainer/InputPanel/TextEdit
 	textnode.text=(textnode.text).left(index)+newval+(textnode.text).right(index+oldlen)
-	#update affected indices
+	#update affected text "pointer" indices that keep track of values' positions in text
 	for attr in attrs_list:
 		if attr.attr_index>index:
 			attr.attr_index+=delta_len
-	print("Value edited: "+str(oldval)+" changed to "+str(newval)+" on index "+str(index))
 	
+	# call render function to update the 3d model.
+	renderurdf()
+	
+	print("Value edited: "+str(oldval)+" changed to "+str(newval)+" on index "+str(index))
+
 
 # fill in the textbox with a sample input.
 func _on_TestButton_pressed():
@@ -90,8 +93,13 @@ func _on_TestButton_pressed():
 	$HBoxContainer/InputPanel/TextEdit.text=test_urdf
 
 
-
+# render the urdf when the render button is pressed
 func _on_RenderButton_pressed():
+	renderurdf()
+
+# call the render_urdf() function from urdf_renderer.gd
+# to render the URDF text in the result pane.
+func renderurdf():
 	var result=urdf_parser.parse($HBoxContainer/InputPanel/TextEdit.text)
-	var env3d=get_node("HBoxContainer/ViewportContainer/Viewport/3D_env")
+	var env3d=get_node("HBoxContainer/ViewportContainer/Viewport/3D_env/Objects")
 	urdf_renderer.render_urdf(result, env3d)
