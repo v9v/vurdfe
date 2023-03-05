@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 class Vec3urdf:
 	var x:float
@@ -84,14 +84,14 @@ var collision=Collision.new()
 
 func _ready():
 	#parent node creation
-	var link_node=Spatial.new()
+	var link_node=Node3D.new()
 	link_node.set_name(link_name)
 	
 	#visual node creation
 	match visual.geometry.type:
 		GeoTypeurdf.box:
 			if visual.geometry.size:
-				var vis_geo = CSGBox.new()
+				var vis_geo = CSGBox3D.new()
 				link_node.add_child(vis_geo)
 				#set box size.
 				#TODO: verify that x,y,z assignments are correct here!
@@ -99,30 +99,30 @@ func _ready():
 				vis_geo.height=visual.geometry.size.y/2
 				vis_geo.depth=visual.geometry.size.z/2
 				#set box orientation
-				vis_geo.translation=visual.origin.xyz
+				vis_geo.position=visual.origin.xyz
 				#TODO: verify rpy assignments are correct
 				vis_geo.rotation=visual.origin.rpy
 				print("box created!")
 		GeoTypeurdf.cylinder:
 			if visual.geometry.radius and visual.geometry.length:
-				var vis_geo = CSGCylinder.new()
+				var vis_geo = CSGCylinder3D.new()
 				link_node.add_child(vis_geo)
 				#set cylinder size
 				vis_geo.radius=visual.geometry.radius
 				vis_geo.height=visual.geometry.length
 				#set cylinder orientation
-				vis_geo.translation=visual.origin.xyz
+				vis_geo.position=visual.origin.xyz
 				#TODO: verify rpy assignments are correct
 				vis_geo.rotation=visual.origin.rpy
 				print("cylinder created!")
 		GeoTypeurdf.sphere:
 			if visual.geometry.radius:
-				var vis_geo = CSGSphere.new()
+				var vis_geo = CSGSphere3D.new()
 				link_node.add_child(vis_geo)
 				#set sphere size
 				vis_geo.radius=visual.geometry.radius
 				#set sphere orientation
-				vis_geo.translation=visual.origin.xyz
+				vis_geo.position=visual.origin.xyz
 				#TODO: verify rpy assignments are correct
 				vis_geo.rotation=visual.origin.rpy
 				print("sphere created!")

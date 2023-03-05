@@ -5,13 +5,13 @@ const EPSILON=0.001
 
 # type of the attribute, string, number, three numbers or four numbers?
 enum ATTRT {text, num, xyz, rgba}
-export(ATTRT) var attr_type
+@export var attr_type: ATTRT
 # name of attribute
-export var attr_name: String
+@export var attr_name: String
 # value of attribute
-export var attr_val: String
+@export var attr_val: String
 # index of where the value is located in original text
-export var attr_index: int
+@export var attr_index: int
 
 var prev_val: String
 var root_node
@@ -31,7 +31,7 @@ func _ready():
 			var textfield=LineEdit.new()
 			#configure
 			textfield.name="TextField"
-			textfield.rect_min_size.x=175
+			textfield.custom_minimum_size.x=175
 			#set attribute value
 			textfield.text=attr_val
 			add_child(textfield)
@@ -39,7 +39,7 @@ func _ready():
 			var numfield=SpinBox.new()
 			#configure
 			numfield.name="NumField"
-			numfield.rect_min_size.x=175
+			numfield.custom_minimum_size.x=175
 			numfield.allow_greater=true
 			numfield.allow_lesser=true
 			numfield.step=EPSILON
@@ -54,9 +54,9 @@ func _ready():
 			xfield.name="XField"
 			yfield.name="YField"
 			zfield.name="ZField"
-			xfield.rect_min_size.x=50
-			yfield.rect_min_size.x=50
-			zfield.rect_min_size.x=50
+			xfield.custom_minimum_size.x=50
+			yfield.custom_minimum_size.x=50
+			zfield.custom_minimum_size.x=50
 			xfield.allow_greater=true
 			xfield.allow_lesser=true
 			yfield.allow_greater=true
@@ -86,10 +86,10 @@ func _ready():
 			gfield.name="GField"
 			bfield.name="BField"
 			afield.name="AField"
-			rfield.rect_min_size.x=50
-			gfield.rect_min_size.x=50
-			bfield.rect_min_size.x=50
-			afield.rect_min_size.x=50
+			rfield.custom_minimum_size.x=50
+			gfield.custom_minimum_size.x=50
+			bfield.custom_minimum_size.x=50
+			afield.custom_minimum_size.x=50
 			rfield.allow_greater=true
 			rfield.allow_lesser=true
 			gfield.allow_greater=true
@@ -116,7 +116,7 @@ func _ready():
 			add_child(afield)
 	#connect to edit checking timer
 	var timer=get_node("/root/Main/EditCheckTimer")
-	timer.connect("timeout", self, "_on_EditCheckTimer_timeout")
+	timer.connect("timeout",Callable(self,"_on_EditCheckTimer_timeout"))
 
 #get the attribute val in a single string.
 func get_attr_val():

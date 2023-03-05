@@ -1,4 +1,4 @@
-#tool
+#@tool
 #extends EditorScript
 extends Node
 
@@ -16,9 +16,9 @@ func nest_tags(tags):
 	var open_tag_name=""
 	for tag in tags:
 		if tag["type"][0]=="/": #closing tag
-			open_tag_name=tag["type"].right(1)
+			open_tag_name=tag["type"].substr(1)
 			var open_tags_inv=open_tags.duplicate() #invert list
-			open_tags_inv.invert()
+			open_tags_inv.reverse()
 			for i in range(len(open_tags_inv)):
 				var btag=open_tags_inv[i]
 				if btag["type"]==open_tag_name:
@@ -28,7 +28,7 @@ func nest_tags(tags):
 					break
 				else:
 					children.append(btag)
-					open_tags.remove(len(open_tags_inv)-i-1)
+					open_tags.remove_at(len(open_tags_inv)-i-1)
 		else:
 			open_tags.append(tag)
 	return open_tags

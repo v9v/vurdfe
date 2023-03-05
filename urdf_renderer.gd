@@ -7,7 +7,7 @@ enum GeoTypeurdf {box,cylinder,sphere,mesh}
 func create_link(link, env3d):
 	if not link["type"]=="link":
 		return 0 #or throw error?
-	var linknode=link_class.instance()
+	var linknode=link_class.instantiate()
 	
 	linknode.link_name=link["name"][0]
 	
@@ -19,16 +19,16 @@ func create_link(link, env3d):
 					match property["type"]:
 						"origin":
 							var xyz_list=property["xyz"][0].split(" ")
-							linknode.visual.origin.xyz=Vector3(xyz_list[0],xyz_list[1],xyz_list[2])
+							linknode.visual.origin.xyz=Vector3(float(xyz_list[0]),float(xyz_list[1]),float(xyz_list[2]))
 							var rpy_list=property["rpy"][0].split(" ")
-							linknode.visual.origin.rpy=Vector3(rpy_list[0],rpy_list[1],rpy_list[2])
+							linknode.visual.origin.rpy=Vector3(float(rpy_list[0]),float(rpy_list[1]),float(rpy_list[2]))
 						"geometry":
 							var object=property["children"][0]
 							match object["type"]:
 								"box":
 									linknode.visual.geometry.type=GeoTypeurdf.box
 									var size_list=object["size"][0].split(" ")
-									linknode.visual.geometry.size=Vector3(size_list[0],size_list[1],size_list[2])
+									linknode.visual.geometry.size=Vector3(float(size_list[0]),float(size_list[1]),float(size_list[2]))
 								"cylinder":
 									linknode.visual.geometry.type=GeoTypeurdf.cylinder
 									linknode.visual.geometry.radius=object["radius"][0]

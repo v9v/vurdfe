@@ -4,6 +4,7 @@ var urdf_parser=load("res://urdf_parser.gd").new()
 var urdf_renderer=load("res://urdf_renderer.gd").new()
 var kvedit=load("res://keyvalueedit.tscn")
 var tagbox=load("res://tagcontainer.tscn")
+var sidebaraddr="HBoxContainer/Sidebar/Margin/"
 
 var attrs_list=[]
 
@@ -15,12 +16,12 @@ func _on_Button_pressed():
 func add_to_sidebar(parsed,parents=[]):
 	for i in parsed:
 		if i=="children":
-			var tagnode=get_node_or_null("HBoxContainer/Sidebar/"+build_node_addr(parents)+parsed["type"])
+			var tagnode=get_node_or_null(sidebaraddr+build_node_addr(parents)+parsed["type"])
 			tagnode.showpanel()
 			for child in parsed[i]:
 				add_to_sidebar(child, parents+[parsed["type"]])
 		else:
-			var newkv=kvedit.instance()
+			var newkv=kvedit.instantiate()
 			attrs_list.append(newkv)
 			#if numeric
 			if parsed[i][0].is_valid_float():
@@ -41,16 +42,15 @@ func add_to_sidebar(parsed,parents=[]):
 			newkv.attr_name=String(i)
 			newkv.attr_index=parsed[i][1]
 			
-			var tagnode=get_node_or_null("HBoxContainer/Sidebar/"+build_node_addr(parents)+parsed["type"])
+			var parentaddr=sidebaraddr+build_node_addr(parents)
+			var tagnode=get_node_or_null(parentaddr+parsed["type"])
 			#var tagnode=get_node_or_null("HBoxContainer/Sidebar/"+parsed["type"])
 			if tagnode != null:
 				tagnode.add_attr(newkv)
 			else:
-				var newtag = tagbox.instance()
+				var newtag = tagbox.instantiate()
 				newtag.title=parsed["type"]
-				var parentaddr="HBoxContainer/Sidebar/"+build_node_addr(parents).rstrip("/")
-				print(parentaddr)
-				get_node(parentaddr).add_child(newtag, true)
+				get_node(parentaddr.rstrip("/")).add_child(newtag, true)
 			print("Added: ",i," = ",parsed[i], " under ", parents)
 
 # appends all parent nodes together.
@@ -65,7 +65,7 @@ func build_node_addr(listy):
 func edit_val(index, oldlen, delta_len, oldval, newval):
 	#update value in text
 	var textnode=$HBoxContainer/InputPanel/TextEdit
-	textnode.text=(textnode.text).left(index)+newval+(textnode.text).right(index+oldlen)
+	textnode.text=(textnode.text).left(index)+newval+(textnode.text).substr(index+oldlen)
 	#update affected text "pointer" indices that keep track of values' positions in text
 	for attr in attrs_list:
 		if attr.attr_index>index:
@@ -101,5 +101,5 @@ func _on_RenderButton_pressed():
 # to render the URDF text in the result pane.
 func renderurdf():
 	var result=urdf_parser.parse($HBoxContainer/InputPanel/TextEdit.text)
-	var env3d=get_node("HBoxContainer/ViewportContainer/Viewport/3D_env/Objects")
+	var env3d=get_node("HBoxContainer/SubViewportContainer/SubViewport/3D_env/Objects")
 	urdf_renderer.render_urdf(result, env3d)
