@@ -14,11 +14,11 @@ class Originurdf:
 	var xyz:Vector3
 	var rpy:Vector3
 
-class Colorurdf:
-	var r:float
-	var g:float
-	var b:float
-	var a:float
+#class Colorurdf:
+#	var r:float
+#	var g:float
+#	var b:float
+#	var a:float
 
 class Massurdf:
 	var value:float
@@ -42,7 +42,7 @@ class Geometryurdf:
 
 class Materialurdf:
 	var matname:String
-	var color:Colorurdf
+	var color:Color
 	#TODO: add texture here for texture support
 
 class Inertial:
@@ -87,11 +87,14 @@ func _ready():
 	var link_node=Node3D.new()
 	link_node.set_name(link_name)
 	
+	var vis_geo
+	
 	#visual node creation
 	match visual.geometry.type:
 		GeoTypeurdf.box:
 			if visual.geometry.size:
-				var vis_geo = CSGBox3D.new()
+				vis_geo = CSGBox3D.new()
+				vis_geo.set_name("vis_geo")
 				link_node.add_child(vis_geo)
 				#set box size.
 				#TODO: verify that x,y,z assignments are correct here!
@@ -105,7 +108,8 @@ func _ready():
 				print("box created!")
 		GeoTypeurdf.cylinder:
 			if visual.geometry.radius and visual.geometry.length:
-				var vis_geo = CSGCylinder3D.new()
+				vis_geo = CSGCylinder3D.new()
+				vis_geo.set_name("vis_geo")
 				link_node.add_child(vis_geo)
 				#set cylinder size
 				vis_geo.radius=visual.geometry.radius
@@ -117,7 +121,8 @@ func _ready():
 				print("cylinder created!")
 		GeoTypeurdf.sphere:
 			if visual.geometry.radius:
-				var vis_geo = CSGSphere3D.new()
+				vis_geo = CSGSphere3D.new()
+				vis_geo.set_name("vis_geo")
 				link_node.add_child(vis_geo)
 				#set sphere size
 				vis_geo.radius=visual.geometry.radius
@@ -130,4 +135,9 @@ func _ready():
 			pass #not implemented
 		_:
 			pass
+	
+	if visual.material.matname:
+		vis_geo.material=StandardMaterial3D.new()
+		vis_geo.material.albedo_color=visual.material.color
+	
 	add_child(link_node)

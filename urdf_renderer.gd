@@ -14,16 +14,15 @@ func create_link(link, env3d):
 	for sublevel in link["children"]:
 		match sublevel["type"]:
 			"visual":
-				#match i["children"]["
-				for property in sublevel["children"]:
-					match property["type"]:
+				for visproperty in sublevel["children"]:
+					match visproperty["type"]:
 						"origin":
-							var xyz_list=property["xyz"][0].split(" ")
+							var xyz_list=visproperty["xyz"][0].split(" ")
 							linknode.visual.origin.xyz=Vector3(float(xyz_list[0]),float(xyz_list[1]),float(xyz_list[2]))
-							var rpy_list=property["rpy"][0].split(" ")
+							var rpy_list=visproperty["rpy"][0].split(" ")
 							linknode.visual.origin.rpy=Vector3(float(rpy_list[0]),float(rpy_list[1]),float(rpy_list[2]))
 						"geometry":
-							var object=property["children"][0]
+							var object=visproperty["children"][0]
 							match object["type"]:
 								"box":
 									linknode.visual.geometry.type=GeoTypeurdf.box
@@ -41,6 +40,15 @@ func create_link(link, env3d):
 									pass
 								_:
 									pass
+						"material":
+							linknode.visual.material.matname=visproperty["name"][0]
+							for matproperty in visproperty["children"]:
+								match matproperty["type"]:
+									"color":
+										var color=matproperty["rgba"][0].split(" ")
+										linknode.visual.material.color=Color(float(color[0]),float(color[1]),float(color[2]),float(color[3]))
+									_:
+										pass
 						_:
 							pass
 			_:
