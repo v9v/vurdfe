@@ -44,7 +44,6 @@ func add_to_sidebar(parsed,parents=[]):
 			
 			var parentaddr=sidebaraddr+build_node_addr(parents)
 			var tagnode=get_node_or_null(parentaddr+parsed["type"])
-			#var tagnode=get_node_or_null("HBoxContainer/Sidebar/"+parsed["type"])
 			if tagnode != null:
 				tagnode.add_attr(newkv)
 			else:
